@@ -1,7 +1,7 @@
 VERSION 5.00
 Begin VB.Form frmMain 
    BorderStyle     =   1  'Fixed Single
-   Caption         =   "ColourPET Semi-Graphics Generator"
+   Caption         =   "PET/CBM-II Semi-Graphics Generator"
    ClientHeight    =   2790
    ClientLeft      =   45
    ClientTop       =   390
@@ -16,7 +16,7 @@ Begin VB.Form frmMain
       Height          =   315
       ItemData        =   "frmMain.frx":0000
       Left            =   990
-      List            =   "frmMain.frx":0010
+      List            =   "frmMain.frx":0016
       Style           =   2  'Dropdown List
       TabIndex        =   5
       Top             =   630
@@ -91,40 +91,55 @@ Dim i As Integer
 Dim b As Integer
 Dim p0 As Integer, p1 As Integer, p2 As Integer, p3 As Integer
 Dim p4 As Integer, p5 As Integer, p6 As Integer, p7 As Integer
-Dim Max As Integer
+Dim Max As Integer, Nul As String
+
 
 Private Sub Form_Load()
     p0 = 1: p1 = 2: p2 = 4: p3 = 8: p4 = 16: p5 = 32: p6 = 64: p7 = 128
+    Nul = Chr(0)
     
     cboGen.ListIndex = 0 'set the default gen method drop-down
 
 End Sub
 
 Private Sub cmdAbout_Click()
-    MsgBox "ColourPET SemiGraphicGen V1.0, Nov 7, 2016 (C)Steve J. Gray"
+    MsgBox "ColourPET/CBM-II SemiGraphicGen V1.1, July 14, 2018. (C)2016-2018 Steve J. Gray"
 End Sub
 
 Private Sub cmdStart_Click()
    
     Select Case cboGen.ListIndex
-        Case 0: Call Gen1
-        Case 1: Call Gen2(0)
-        Case 2: Call Gen2(1)
-        Case 3: Call Gen2(2)
+        Case 0: Call Gen1(0)
+        Case 1: Call Gen1(1)
+        Case 2: Call Gen1(2)
+        
+        Case 3: Call Gen2(0)
+        Case 4: Call Gen2(1)
+        Case 5: Call Gen2(2)
     End Select
 End Sub
 
 
-'GEN1 - 2x4 in 8x8 full
-'00001111
-'00001111
-'22223333
-'22223333
-'44445555
-'44445555
-'66667777
-'66667777
-Sub Gen1()
+'GEN1 - 2x4 in 8x8 or 8x16
+'=========================
+'MODE 0      MODE 1       MODE 2
+'00001111   00001111    00001111
+'00001111   00001111    00001111
+'22223333   00001111    00001111
+'22223333   00001111    00001111
+'44445555   22223333    22223333
+'44445555   22223333    22223333
+'66667777   22223333    22223333
+'66667777   44445555    22223333
+'           44445555    44445555
+'           44445555    44445555
+'           44445555    44445555
+'           66667777    44445555
+'           66667777    66667777
+'           66667777    66667777
+'           --------    66667777
+'           --------    66667777
+Sub Gen1(ByVal Mode As Integer)
     
     Max = 127: If cbFull.Value = vbChecked Then Max = 255
     
@@ -135,22 +150,30 @@ Sub Gen1()
         b = 0 'blocks 0 and 1
         If (i And p0) > 0 Then b = &HF0
         If (i And p1) > 0 Then b = b + &HF
-        Print #1, Chr(b); Chr(b); 'two pixels tall
+        Print #1, Chr(b); Chr(b);                  'two pixels tall
+        If Mode > 0 Then Print #1, Chr(b); Chr(b); 'four pixels tall
         
         b = 0 'blocks 2 and 3
         If (i And p2) > 0 Then b = &HF0
         If (i And p3) > 0 Then b = b + &HF
-        Print #1, Chr(b); Chr(b); 'two pixels tall
+        Print #1, Chr(b); Chr(b);                   'two pixels tall
+        If Mode > 0 Then Print #1, Chr(b);          'three pixels tall
+        If Mode > 1 Then Print #1, Chr(b);          'four pixels tall
         
         b = 0 'blocks 4 and 5
         If (i And p4) > 0 Then b = &HF0
         If (i And p5) > 0 Then b = b + &HF
-        Print #1, Chr(b); Chr(b); 'two pixels tall
+        Print #1, Chr(b); Chr(b);                   'two pixels tall
+        If Mode > 0 Then Print #1, Chr(b); Chr(b);  'four pixels tall
         
         b = 0 'blocks 6 and 7
         If (i And p6) > 0 Then b = &HF0
         If (i And p7) > 0 Then b = b + &HF
-        Print #1, Chr(b); Chr(b); 'two pixels tall
+        Print #1, Chr(b); Chr(b);                   'two pixels tall
+        If Mode > 0 Then Print #1, Chr(b);          'three pixels tall
+        If Mode > 1 Then Print #1, Chr(b);          'four pixels tall
+        
+        If Mode = 1 Then Print #1, Nul; Nul;        'two blank lines
     Next i
     
     Close 1

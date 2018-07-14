@@ -1,7 +1,7 @@
-ColourPET Semi-graphic Generator (C)2016 Steve J. Gray
-================================
+ColourPET Semi-graphic Generator V1.1 (C)2016-2018 Steve J. Gray
+================================ July 14, 2018
 
-This program builds semi-graphics fonts for use with my ColourPET/Dual board.
+This program builds semi-graphics fonts for use with my ColourPET/Dual board, PET and CBM-II.
 
 The ColourPET/Dual gives one 40x25 by 16-colour screen, or two independent 40x25 monochrome screens.
 The PET has several standard semi-graphic character by dividing the 8x8 pixel character into
